@@ -59,7 +59,7 @@ public:
         }
 
         // add EOF token
-        tokens->push_back(Token(TokenType(EOF), "", nullptr, line));
+        tokens->push_back(Token(EOFILE, "", nullptr, line));
     }
 
     void print_tockens() const
