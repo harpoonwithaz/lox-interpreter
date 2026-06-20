@@ -6,6 +6,7 @@
 
 // local includes
 #include "scanner.h"
+#include "error-handling.h"
 
 std::string read_file_contents(const std::string& filename);
 
@@ -27,23 +28,10 @@ int main(int argc, char *argv[]) {
     if (command == "tokenize") {
         std::string file_contents = read_file_contents(argv[2]);
         
-        // TODO: Uncomment the code below to pass the first stage
-        // 
         if (!file_contents.empty()) {
-            // std::cerr << "Scanner not implemented" << std::endl;
-            // return 1;
-            // std::cout << "file contents: *" << file_contents << "*" << std::endl;
-            try
-            {
-                Scanner scanner(file_contents);
-                scanner.scan_tokens();
-                scanner.print_tokens();
-            }
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-                return 65;
-            }
+            Scanner scanner(file_contents);
+            scanner.scan_tokens();
+            scanner.print_tokens();
         }
         else
         {
@@ -54,6 +42,8 @@ int main(int argc, char *argv[]) {
         std::cerr << "Unknown command: " << command << std::endl;
         return 1;
     }
+
+    if (EH::had_error) return 65;
 
     return 0;
 }

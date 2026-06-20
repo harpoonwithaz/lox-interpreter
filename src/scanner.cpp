@@ -1,5 +1,6 @@
 #include "token.h"
 #include "scanner.h"
+#include "error-handling.h"
 
 #include <string>
 #include <vector>
@@ -26,9 +27,7 @@ void Scanner::scan_token()
         case ';': add_token(TokenType::SEMICOLON); break;
         case '*': add_token(TokenType::STAR); break; 
 
-        default:
-            std::string msg = "[line " + std::to_string(line) + "] Error: Unexpected character: " + c;
-            throw std::runtime_error(msg);
+        default: EH::error(line, "Unexpected character."); break;
     }
 }
 
