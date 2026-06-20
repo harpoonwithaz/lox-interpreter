@@ -24,6 +24,8 @@ void Scanner::scan_token()
         case '+': add_token(TokenType::PLUS); break;
         case ';': add_token(TokenType::SEMICOLON); break;
         case '*': add_token(TokenType::STAR); break; 
+
+        std::cerr << "[line " << line << "] Error: Unexpected character: " << c << std::endl;
     }
 }
 
