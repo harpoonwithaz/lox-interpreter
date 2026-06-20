@@ -44,6 +44,11 @@ void Scanner::scan_token()
                 // A comment goes until the end of the line
                 while (peek() != '\n' && !is_at_end()) current++;
             }
+            else
+            {
+                add_token(TokenType::SLASH);
+            }
+            break;
         default: 
             std::string msg = "Unexpected character: ";
             msg.push_back(c);
