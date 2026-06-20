@@ -5,7 +5,7 @@
 #include <string>
 
 // local includes
-#include "scanner.cpp"
+#include "scanner.h"
 
 std::string read_file_contents(const std::string& filename);
 
