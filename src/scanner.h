@@ -19,6 +19,7 @@ private:
 
     bool is_at_end() const;
     void scan_token();
+    void string();
     bool match(char expected);
     char peek();
     void add_token(const TokenType& type);

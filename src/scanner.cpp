@@ -60,12 +60,36 @@ void Scanner::scan_token()
             line++;
             break;
 
+        case '"': 
+
         default: 
             std::string msg = "Unexpected character: ";
             msg.push_back(c);
             EH::error(line, msg);
             break;
     }
+}
+
+void Scanner::string()
+{
+    while (peek() != '"' && !is_at_end())
+    {
+        if (peek() == '\n') line++; // multiline strings
+        current++;
+    }
+
+    if (is_at_end())
+    {
+        EH::error(line, "Unterminated string.");
+        return;
+    }
+
+    // the closing quote
+    current++;
+
+    // exclude the beginning and end quotes
+    std::string value = source.substr(start+1, (current-start)-1);
+    add_token(TokenType::STRING, value);
 }
 
 bool Scanner::match(char expected)
@@ -78,7 +102,7 @@ bool Scanner::match(char expected)
 }
 
 // Returns the current char in the source
-char Scanner::peek()
+char Scanner::peek() const
 {
     if (is_at_end()) return '\0'; // null terminator
     return source[current];
