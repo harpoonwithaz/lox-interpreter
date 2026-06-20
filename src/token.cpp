@@ -55,7 +55,7 @@ std::string Token::type_string(TokenType t)
 }
 
 // std::any is black magic and i dont really care how it works, only that it does
-std::string literal_string(const std::any& literal)
+std::string Token::literal_string(const std::any& literal)
 {
     if (!literal.has_value()) return "null";
 
