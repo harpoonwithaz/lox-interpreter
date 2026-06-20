@@ -39,11 +39,10 @@ void Scanner::scan_token()
             add_token(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
             break;
         case '/':
-            // for comments
             if (match('/'))
             {
-                // move current (ignore all text) until newline or end
-                while (peek() != '\n' || !is_at_end()) current++;
+                // A comment goes until the end of the line
+                while (peek() != '\n' && !is_at_end()) current++;
             }
         default: 
             std::string msg = "Unexpected character: ";
