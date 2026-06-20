@@ -60,7 +60,7 @@ void Scanner::scan_token()
             line++;
             break;
 
-        case '"': 
+        case '"': string(); break;
 
         default: 
             std::string msg = "Unexpected character: ";
