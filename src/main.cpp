@@ -6,7 +6,7 @@
 
 // local includes
 #include "scanner.h"
-#include "error-handling.h"
+#include "error.h"
 
 std::string read_file_contents(const std::string& filename);
 
