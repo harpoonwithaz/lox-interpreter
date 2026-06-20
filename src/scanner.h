@@ -20,6 +20,7 @@ private:
     bool is_at_end() const;
     void scan_token();
     bool match(char expected);
+    char peek();
     void add_token(const TokenType& type);
     void add_token(const TokenType& type, const std::any& literal);
 public:

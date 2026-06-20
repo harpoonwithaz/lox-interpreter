@@ -38,6 +38,13 @@ void Scanner::scan_token()
         case '>':
             add_token(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
             break;
+        case '/':
+            // For comments
+            if (match('/'))
+            {
+                // move current until newline or end
+                while (peek() != '\n' || !is_at_end()) current++;
+            }
         default: 
             std::string msg = "Unexpected character: ";
             msg.push_back(c);
@@ -53,6 +60,13 @@ bool Scanner::match(char expected)
 
     current++;
     return true;
+}
+
+// Returns the current char in the source
+char Scanner::peek()
+{
+    if (is_at_end()) return '\0'; // null terminator
+    return source[current];
 }
 
 void Scanner::add_token(const TokenType& type) { add_token(type, nullptr); }
