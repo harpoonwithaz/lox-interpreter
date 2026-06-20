@@ -67,7 +67,7 @@ std::string Token::literal_string(const std::any& literal)
 
         // remove trailing 0's
         bool zeros = true;
-        for (size_t i = str.find('.'); i < str.length(); i++)
+        for (size_t i = (str.find('.')+1); i < str.length(); i++)
         {
             if (str[i] != '0') zeros = false; break;
         }
