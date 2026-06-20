@@ -27,7 +27,10 @@ void Scanner::scan_token()
         case ';': add_token(TokenType::SEMICOLON); break;
         case '*': add_token(TokenType::STAR); break; 
 
-        default: EH::error(line, "Unexpected character: " + c); break;
+        default: 
+            std::string msg = "Unexpected character: " + c;
+            EH::error(line, msg);
+            break;
     }
 }
 
