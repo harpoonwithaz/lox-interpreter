@@ -66,10 +66,10 @@ std::string Token::literal_string(const std::any& literal)
         std::string str = std::to_string(std::any_cast<double>(literal));
 
         // remove trailing 0's
-        bool zeros = false;
+        bool zeros = true;
         for (size_t i = str.find('.'); i < str.length(); i++)
         {
-            if (str[i] != '0') zeros = true; break;
+            if (str[i] != '0') zeros = false; break;
         }
         if (zeros)
         {
