@@ -63,11 +63,44 @@ void Scanner::scan_token()
         case '"': string(); break;
 
         default: 
-            std::string msg = "Unexpected character: ";
-            msg.push_back(c);
-            EH::error(line, msg);
+            if (is_digit(c))
+            {
+                number();
+            }
+            else
+            {
+                std::string msg = "Unexpected character: ";
+                msg.push_back(c);
+                EH::error(line, msg);
+            }
             break;
     }
+}
+
+void Scanner::number()
+{
+    while (is_digit(peek())) current++;
+
+    // decimal points
+    if (peek() == '.' && is_digit(peek_next()))
+    {
+        // consume the '.'
+        current++;
+
+        while (is_digit(peek())) current++;
+    }
+
+    try
+    {
+        double value = std::stod(source.substr(start, (current-start)));
+        add_token(TokenType::NUMBER, value);
+    }
+    // catch(const std::exception& e)
+    catch(...)
+    {
+        EH::error(line, "Failed to convert number."); // will make it more verbose later
+    }
+    
 }
 
 void Scanner::string()
@@ -107,6 +140,14 @@ char Scanner::peek() const
     if (is_at_end()) return '\0'; // null terminator
     return source[current];
 }
+
+char Scanner::peek_next() const
+{
+    if (current + 1 >= source.length()) return '\0';
+    return source[current+1];
+}
+
+bool Scanner::is_digit(char c) const { return (c >= '0' && c <= '9'); }
 
 void Scanner::add_token(const TokenType& type) { add_token(type, nullptr); }
 

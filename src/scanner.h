@@ -19,9 +19,12 @@ private:
 
     bool is_at_end() const;
     void scan_token();
+    void number();
     void string();
     bool match(char expected);
     char peek() const;
+    char peek_next() const;
+    bool is_digit(char c) const;
     void add_token(const TokenType& type);
     void add_token(const TokenType& type, const std::any& literal);
 public:
