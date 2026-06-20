@@ -21,7 +21,7 @@ private:
     void scan_token();
     void string();
     bool match(char expected);
-    char peek();
+    char peek() const;
     void add_token(const TokenType& type);
     void add_token(const TokenType& type, const std::any& literal);
 public:
