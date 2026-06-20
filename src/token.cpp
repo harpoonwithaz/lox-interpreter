@@ -4,6 +4,7 @@
 #include <string>
 #include <any>
 #include <iostream>
+#include <cstddef>
 
 std::string Token::type_string(TokenType t)
 {
@@ -53,7 +54,18 @@ std::string Token::type_string(TokenType t)
     }
 }
 
+// std::any is black magic and i dont really care how it works, only that it does
+std::string literal_string(const std::any& literal)
+{
+    if (!literal.has_value()) return "null";
+
+    if (literal.type() == typeid(std::nullptr_t)) return "null";
+    if (literal.type() == typeid(std::string)) return std::any_cast<const std::string&>(literal);
+
+    return "null";
+}
+
 std::string Token::to_string() const
 {
-    return type_str + " " + lexeme + " " + "null";
+    return type_str + " " + lexeme + " " + literal_str;
 }
