@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
         if (!file_contents.empty()) {
             // std::cerr << "Scanner not implemented" << std::endl;
             // return 1;
+            // std::cout << "file contents: *" << file_contents << "*" << std::endl;
             Scanner scanner(file_contents);
             scanner.scan_tokens();
             scanner.print_tockens();
