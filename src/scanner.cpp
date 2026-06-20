@@ -49,6 +49,17 @@ void Scanner::scan_token()
                 add_token(TokenType::SLASH);
             }
             break;
+
+        case ' ':
+        case '\r':
+        case '\t':
+            // Ingore whitespace, enter, carriage return
+            break;
+
+        case '\n':
+            line++;
+            break;
+
         default: 
             std::string msg = "Unexpected character: ";
             msg.push_back(c);
