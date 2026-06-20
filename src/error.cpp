@@ -1,5 +1,4 @@
 #include <error-handling.h>
-
 #include <stddef.h>
 #include <string>
 
