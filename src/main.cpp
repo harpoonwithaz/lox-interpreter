@@ -35,9 +35,12 @@ int main(int argc, char *argv[]) {
             // std::cout << "file contents: *" << file_contents << "*" << std::endl;
             Scanner scanner(file_contents);
             scanner.scan_tokens();
-            scanner.print_tockens();
+            scanner.print_tokens();
         }
-        // std::cout << "EOF  null" << std::endl; // Placeholder, replace this line when implementing the scanner
+        else
+        {
+            std::cout << "EOF  null" << std::endl;
+        }
         
     } else {
         std::cerr << "Unknown command: " << command << std::endl;

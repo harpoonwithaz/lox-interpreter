@@ -66,7 +66,7 @@ public:
         // tokens.push_back(Token(TokenType::EOFILE, "", nullptr, line));
     }
 
-    void print_tockens() const
+    void print_tokens() const
     {
         for (const Token& t : *tokens)
         // for (const Token& t : tokens)
