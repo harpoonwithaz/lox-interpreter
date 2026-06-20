@@ -64,7 +64,7 @@ std::string Token::literal_string(const std::any& literal)
     if (literal.type() == typeid(double)) 
     {
         std::string str = std::to_string(std::any_cast<double>(literal));
-        return str.substr(0, (str.length()-5));
+        return str;
     }
 
     return "null";
