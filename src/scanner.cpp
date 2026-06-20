@@ -7,6 +7,7 @@
 #include <memory>
 #include <iostream>
 #include <stdexcept>
+#include <format>
 
 bool Scanner::is_at_end() const { return current >= source.length(); }
 
@@ -95,10 +96,10 @@ void Scanner::number()
         double value = std::stod(source.substr(start, (current-start)));
         add_token(TokenType::NUMBER, value);
     }
-    // catch(const std::exception& e)
-    catch(...)
+    catch(const std::exception& e)
     {
-        EH::error(line, "Failed to convert number."); // will make it more verbose later
+        std::string msg = std::format("Failed to convert number. {}", e.what());
+        EH::error(line, msg); // will make it more verbose later
     }
     
 }

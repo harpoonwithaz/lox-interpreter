@@ -65,18 +65,6 @@ std::string Token::literal_string(const std::any& literal)
     if (literal.type() == typeid(std::string)) return std::any_cast<const std::string&>(literal);
     if (literal.type() == typeid(double)) 
     {
-        // std::string str = std::to_string(std::any_cast<double>(literal));
-
-        // remove trailing 0's
-        // bool zeros = true;
-        // for (size_t i = (str.find('.')+1); i < str.length(); i++)
-        // {
-        //     if (str[i] != '0') zeros = false; break;
-        // }
-        // if (zeros)
-        // {
-        //     str = str.substr(0, str.length()-5);
-        // }
         double value = std::any_cast<double>(literal);
 
         std::string formatted_val;
