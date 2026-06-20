@@ -1,6 +1,6 @@
 #include "token.h"
 #include "scanner.h"
-#include "error-handling.h"
+#include "error.h"
 
 #include <string>
 #include <vector>
