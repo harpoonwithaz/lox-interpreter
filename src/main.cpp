@@ -33,9 +33,16 @@ int main(int argc, char *argv[]) {
             // std::cerr << "Scanner not implemented" << std::endl;
             // return 1;
             // std::cout << "file contents: *" << file_contents << "*" << std::endl;
-            Scanner scanner(file_contents);
-            scanner.scan_tokens();
-            scanner.print_tokens();
+            try
+            {
+                Scanner scanner(file_contents);
+                scanner.scan_tokens();
+                scanner.print_tokens();
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
         }
         else
         {

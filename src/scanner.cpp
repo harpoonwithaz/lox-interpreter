@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <stdexcept>
 
 bool Scanner::is_at_end() const { return current >= source.length(); }
 
@@ -26,7 +27,8 @@ void Scanner::scan_token()
         case '*': add_token(TokenType::STAR); break; 
 
         default:
-        std::cerr << "[line " << line << "] Error: Unexpected character: " << c << std::endl;
+            std::string msg = "[line " + std::to_string(line) + "] Error: Unexpected character: " + std::to_string(c);
+            throw std::runtime_error(msg);
     }
 }
 
