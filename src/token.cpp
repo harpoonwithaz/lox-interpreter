@@ -5,6 +5,8 @@
 #include <any>
 #include <iostream>
 #include <cstddef>
+#include <format>
+#include <cmath>
 
 std::string Token::type_string(TokenType t)
 {
@@ -63,20 +65,30 @@ std::string Token::literal_string(const std::any& literal)
     if (literal.type() == typeid(std::string)) return std::any_cast<const std::string&>(literal);
     if (literal.type() == typeid(double)) 
     {
-        std::string str = std::to_string(std::any_cast<double>(literal));
+        // std::string str = std::to_string(std::any_cast<double>(literal));
 
         // remove trailing 0's
-        bool zeros = true;
-        for (size_t i = (str.find('.')+1); i < str.length(); i++)
-        {
-            if (str[i] != '0') zeros = false; break;
-        }
-        if (zeros)
-        {
-            str = str.substr(0, str.length()-5);
-        }
+        // bool zeros = true;
+        // for (size_t i = (str.find('.')+1); i < str.length(); i++)
+        // {
+        //     if (str[i] != '0') zeros = false; break;
+        // }
+        // if (zeros)
+        // {
+        //     str = str.substr(0, str.length()-5);
+        // }
+        double value = std::any_cast<double>(literal);
 
-        return str;
+        std::string formatted_val;
+        if (value == std::floor(value)) {
+            // If it's a whole number, force exactly 1 decimal place (.0)
+            formatted_val = std::format("{:.1f}", value);
+        } else {
+            // Otherwise, let std::format dynamically print the exact precision without trailing zeros
+            formatted_val = std::format("{}", value);
+        }
+        
+        return formatted_val;
     }
 
     return "null";
@@ -84,5 +96,5 @@ std::string Token::literal_string(const std::any& literal)
 
 std::string Token::to_string() const
 {
-    return type_str + " " + lexeme + " " + literal_str;
+    return std::format("{} {} {}", type_str, lexeme, literal_str);
 }
