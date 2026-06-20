@@ -39,10 +39,10 @@ void Scanner::scan_token()
             add_token(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
             break;
         case '/':
-            // For comments
+            // for comments
             if (match('/'))
             {
-                // move current until newline or end
+                // move current (ignore all text) until newline or end
                 while (peek() != '\n' || !is_at_end()) current++;
             }
         default: 
