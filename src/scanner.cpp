@@ -28,7 +28,8 @@ void Scanner::scan_token()
         case '*': add_token(TokenType::STAR); break; 
 
         default: 
-            std::string msg = "Unexpected character: " + std::to_string(c);
+            std::string msg = "Unexpected character: ";
+            msg.push_back(c);
             EH::error(line, msg);
             break;
     }
