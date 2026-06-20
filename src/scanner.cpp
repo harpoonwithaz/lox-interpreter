@@ -88,7 +88,7 @@ void Scanner::string()
     current++;
 
     // exclude the beginning and end quotes
-    std::string value = source.substr(start+1, (current-start)-1);
+    std::string value = source.substr(start+1, (current-start)-2);
     add_token(TokenType::STRING, value);
 }
 
