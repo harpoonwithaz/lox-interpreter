@@ -56,7 +56,7 @@ private:
             case TokenType::TRUE: return "TRUE";
             case TokenType::VAR: return "VAR";
             case TokenType::WHILE: return "WHILE";
-            case TokenType::EOFILE: return "EOFILE";
+            case TokenType::EOFILE: return "EOF";
 
             default: return "";
         }
