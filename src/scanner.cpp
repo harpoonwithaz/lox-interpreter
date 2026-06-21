@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <format>
+#include <unordered_map>
 
 bool Scanner::is_at_end() const { return current >= source.length(); }
 
@@ -80,7 +81,16 @@ void Scanner::identifier()
 {
     while (is_alpha_numeric(peek())) current++;
 
-    add_token(TokenType::IDENTIFIER);
+    std::string text = source.substr(start, (current-start));
+    auto type = keywords.find(text);
+    if (type == keywords.end()) // not found in map
+    {
+        add_token(TokenType::IDENTIFIER);
+    }
+    else
+    {
+        add_token(type->second); // add the value of the key from the map
+    }
 }
 
 void Scanner::number()
