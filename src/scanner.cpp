@@ -64,10 +64,8 @@ void Scanner::scan_token()
         case '"': string(); break;
 
         default: 
-            if (is_digit(c))
-            {
-                number();
-            }
+            if (is_digit(c)) number();
+            else if (is_alpha(c)) identifier();
             else
             {
                 std::string msg = "Unexpected character: ";
@@ -76,6 +74,13 @@ void Scanner::scan_token()
             }
             break;
     }
+}
+
+void Scanner::identifier()
+{
+    while (is_alpha_numeric(peek())) current++;
+
+    add_token(TokenType::IDENTIFIER);
 }
 
 void Scanner::number()
@@ -146,6 +151,18 @@ char Scanner::peek_next() const
 {
     if (current + 1 >= source.length()) return '\0';
     return source[current+1];
+}
+
+bool Scanner::is_alpha(char c) const
+{
+    return ((c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+             c == '_');
+}
+
+bool Scanner::is_alpha_numeric(char c) const
+{
+    return (is_alpha(c) || is_digit(c));
 }
 
 bool Scanner::is_digit(char c) const { return (c >= '0' && c <= '9'); }
