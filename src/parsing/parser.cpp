@@ -95,7 +95,6 @@ ExprNode Parser::primary()
 
     if (match({TokenType::NUMBER, TokenType::STRING})) 
     {
-        std::cout << "match number/string\n";
         return std::make_unique<Literal>(previous().get_literal(), previous().get_literal_str());
     }
 
