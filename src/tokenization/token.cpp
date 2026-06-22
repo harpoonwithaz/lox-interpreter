@@ -94,3 +94,5 @@ std::any Token::get_literal() const { return literal; }
 const std::string& Token::get_lexeme() const { return lexeme; }
 
 const std::string& Token::get_literal_str() const { return literal_str; }
+
+size_t Token::get_line() const { return line; }

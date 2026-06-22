@@ -27,13 +27,16 @@ private:
 
     // Helper methods
     bool match(const std::vector<TokenType>& types);
+    Token consume(TokenType type, const std::string& message);
     bool check(const TokenType& type) const;
     Token advance();
     bool is_at_end() const;
     Token peek() const;
     Token previous() const;
+
+    void synchronize();
 public:
     Parser(const std::vector<Token>& t): tokens(t), current(0) {}
-
-    void print_tree();
+    ExprNode parse();
+    void print_tree(ExprNode root);
 };

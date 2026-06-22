@@ -28,4 +28,5 @@ public:
     std::any get_literal() const;
     const std::string& get_lexeme() const;
     const std::string& get_literal_str() const;
+    size_t get_line() const;
 };

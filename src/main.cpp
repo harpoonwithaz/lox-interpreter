@@ -51,7 +51,12 @@ int main(int argc, char *argv[]) {
 
             const std::vector<Token> tokens = scanner.get_tokens();
             Parser parser(tokens);
-            parser.print_tree();
+
+            auto expr = parser.parse();
+
+            if (EH::had_error) return 65;
+
+            parser.print_tree(std::move(expr));
         }
         else
         {

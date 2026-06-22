@@ -1,10 +1,25 @@
 #include <memory>
 #include <iostream>
+#include <stdexcept>
 
 #include "parser.h"
 #include "../tokenization/token-type.h"
+#include "../errors/error.h"
 
 using ExprNode = std::unique_ptr<Expr>;
+
+ExprNode Parser::parse()
+{
+    try
+    {
+        return expression();
+    }
+    catch(const std::exception& e)
+    {
+        return nullptr;
+    }
+    
+}
 
 ExprNode Parser::expression()
 {
@@ -101,11 +116,12 @@ ExprNode Parser::primary()
     if (match({TokenType::LEFT_PAREN}))
     {
         ExprNode expr = expression();
-        advance(); // we dont check for right parentheses yet
+        consume(TokenType::RIGHT_PAREN, "Expect ')' after expression.");
         return std::make_unique<Grouping>(std::move(expr));
     }
 
-    return nullptr;
+    EH::error(peek(), "Expect expression.");
+    throw std::runtime_error(""); // to be caught by the parser
 }
 
 // ------- Helper methods -------
@@ -123,6 +139,14 @@ bool Parser::match(const std::vector<TokenType>& types)
     }
 
     return false;
+}
+
+Token Parser::consume(TokenType type, const std::string& message)
+{
+    if (check(type)) return advance();
+
+    EH::error(peek(), message);
+    throw std::runtime_error(""); // to be caught by the parser
 }
 
 // returns true if the current token is of the given type
@@ -157,10 +181,34 @@ Token Parser::previous() const
     return tokens.at(current-1);
 }
 
-
-void Parser::print_tree()
+void Parser::synchronize()
 {
-    ExprNode root = expression();
+    advance();
+
+    while (!is_at_end())
+    {
+        if (previous().get_type() == TokenType::SEMICOLON) return; // end of the statement
+
+        switch (peek().get_type())
+        {
+            case TokenType::CLASS:
+            case TokenType::FUN:
+            case TokenType::VAR:
+            case TokenType::FOR:
+            case TokenType::IF:
+            case TokenType::WHILE:
+            case TokenType::PRINT:
+            case TokenType::RETURN:
+                return;
+        }
+
+        advance();
+    }
+}
+
+void Parser::print_tree(ExprNode root)
+{
+    // ExprNode root = expression();
     if (!root)
     {
         std::cout << "null\n";
