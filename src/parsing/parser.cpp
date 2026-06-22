@@ -17,7 +17,7 @@ ExprNode Parser::equality()
 {
     ExprNode expr = comparison();
 
-    while (match({TokenType::BANG_EQUAL, TokenType::EQUAL}))
+    while (match({TokenType::BANG_EQUAL, TokenType::EQUAL_EQUAL}))
     {
         Token op = previous(); // match consumed the token
         ExprNode right = comparison();
@@ -95,6 +95,7 @@ ExprNode Parser::primary()
 
     if (match({TokenType::NUMBER, TokenType::STRING})) 
     {
+        std::cout << "match number/string\n";
         return std::make_unique<Literal>(previous().get_literal(), previous().get_literal_str());
     }
 
