@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "token.h"
+#include "../tokenization/token.h"
 
 class Expr
 {

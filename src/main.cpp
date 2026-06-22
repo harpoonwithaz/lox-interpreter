@@ -5,9 +5,9 @@
 #include <string>
 
 // local includes
-#include "scanner.h"
-#include "error.h"
-#include "parser.h"
+#include "tokenization/scanner.h"
+#include "errors/error.h"
+#include "parsing/parser.h"
 
 std::string read_file_contents(const std::string& filename);
 

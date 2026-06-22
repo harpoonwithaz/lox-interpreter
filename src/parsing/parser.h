@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <memory>
 
-#include "token.h"
+#include "../tokenization/token.h"
 #include "expr.h"
 
 using ExprNode = std::unique_ptr<Expr>;

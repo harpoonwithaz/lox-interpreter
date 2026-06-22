@@ -1,9 +1,8 @@
-
 #include <memory>
 #include <iostream>
 
 #include "parser.h"
-#include "token-type.h"
+#include "../tokenization/token-type.h"
 
 using ExprNode = std::unique_ptr<Expr>;
 
