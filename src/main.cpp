@@ -7,6 +7,7 @@
 // local includes
 #include "scanner.h"
 #include "error.h"
+#include "parser.h"
 
 std::string read_file_contents(const std::string& filename);
 
@@ -18,7 +19,7 @@ int main(int argc, char *argv[]) {
     std::cerr << "Logs from your program will appear here!" << std::endl;
 
     if (argc < 3) {
-        std::cerr << "Usage: ./your_program tokenize <filename>" << std::endl;
+        std::cerr << "Usage: ./your_program <command> <filename>" << std::endl;
         return 1;
     }
 
@@ -37,7 +38,28 @@ int main(int argc, char *argv[]) {
             std::cout << "EOF  null" << std::endl;
         }
         
-    } else {
+    }
+    else if (command == "parse")
+    {
+        std::string file_contents = read_file_contents(argv[2]);
+        
+        if (!file_contents.empty()) {
+            Scanner scanner(file_contents);
+            scanner.scan_tokens();
+
+            if (EH::had_error) return 65;
+
+            const std::vector<Token> tokens = scanner.get_tokens();
+            Parser parser(tokens);
+            parser.print_tree();
+        }
+        else
+        {
+            std::cout << "EOF  null" << std::endl;
+        } 
+    }
+    else
+    {
         std::cerr << "Unknown command: " << command << std::endl;
         return 1;
     }

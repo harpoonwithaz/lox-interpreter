@@ -60,4 +60,6 @@ public:
 
     void scan_tokens();
     void print_tokens() const;
+
+    const std::vector<Token>& get_tokens() const;
 };

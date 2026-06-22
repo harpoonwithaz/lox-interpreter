@@ -206,3 +206,5 @@ void Scanner::print_tokens() const
         std::cout << t.to_string() << std::endl;   
     }
 }
+
+const std::vector<Token>& Scanner::get_tokens() const { return *tokens; }

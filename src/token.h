@@ -23,4 +23,9 @@ public:
     literal(literal), literal_str(literal_string(literal)), line(line) {}
 
     std::string to_string() const;
+
+    TokenType get_type() const;
+    std::any get_literal() const;
+    const std::string& get_lexeme() const;
+    const std::string& get_literal_str() const;
 };

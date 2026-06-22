@@ -86,3 +86,11 @@ std::string Token::to_string() const
 {
     return std::format("{} {} {}", type_str, lexeme, literal_str);
 }
+
+TokenType Token::get_type() const { return type; }
+
+std::any Token::get_literal() const { return literal; }
+
+const std::string& Token::get_lexeme() const { return lexeme; }
+
+const std::string& Token::get_literal_str() const { return literal_str; }
