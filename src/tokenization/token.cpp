@@ -1,12 +1,11 @@
-#include "token-type.h"
-#include "token.h"
-
 #include <string>
 #include <variant>
-#include <iostream>
 #include <cstddef>
 #include <format>
 #include <cmath>
+
+#include "token-type.h"
+#include "token.h"
 
 // why doesn't c++ have a way to print the name of the enum :(
 std::string Token::type_string(TokenType t) const
@@ -58,9 +57,9 @@ std::string Token::type_string(TokenType t) const
 }
 
 // helper function that casts dynamic lox type to string representation and returns it
-std::string tk::literal_stringify(const Literal& lt)
+std::string tk::literal_stringify(const Literal& lt, bool lox)
 {
-    if (std::holds_alternative<std::monostate>(lt)) return "null";
+    if (std::holds_alternative<std::monostate>(lt)) return lox ? "nil" : "null";
     if (std::holds_alternative<std::string>(lt)) return std::get<std::string>(lt);
     if (std::holds_alternative<bool>(lt)) return (std::get<bool>(lt) ? "true" : "false"); 
     if (std::holds_alternative<double>(lt))
@@ -71,7 +70,8 @@ std::string tk::literal_stringify(const Literal& lt)
         if (value == std::floor(value))
         {
             // If it's a whole number, force exactly 1 decimal place (.0)
-            formatted_val = std::format("{:.1f}", value);
+            // If we want the lox representation, we use 0 decimal places for whole numbers
+            formatted_val = lox ? std::format("{:.0f}", value) : std::format("{:.1f}", value);
         }
         else
         {
@@ -82,7 +82,7 @@ std::string tk::literal_stringify(const Literal& lt)
         return formatted_val;
     }
 
-    return "null";
+    return lox ? "nil" : "null";
 }
 
 std::string Token::to_string() const

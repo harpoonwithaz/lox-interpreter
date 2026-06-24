@@ -121,7 +121,7 @@ ExprNode Parser::primary()
     }
 
     EH::error(peek(), "Expect expression.");
-    throw std::runtime_error(""); // to be caught by the parser
+    throw std::exception(); // to be caught by the parser
 }
 
 // ------- Helper methods -------
@@ -146,7 +146,7 @@ Token Parser::consume(TokenType type, const std::string& message)
     if (check(type)) return advance();
 
     EH::error(peek(), message);
-    throw std::runtime_error(""); // to be caught by the parser
+    throw std::exception(); // to be caught by the parser
 }
 
 // returns true if the current token is of the given type

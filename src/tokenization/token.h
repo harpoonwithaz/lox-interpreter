@@ -1,9 +1,9 @@
 #pragma once
 
-#include "token-type.h"
-
 #include <string>
 #include <variant>
+
+#include "token-type.h"
 
 // Type definition for literals using std::variant
 // std::monostate is how we will represent lox's 'nil' type
@@ -11,7 +11,7 @@ namespace tk
 { 
     using Literal = std::variant<std::monostate, std::string, bool, double>; 
 
-    std::string literal_stringify(const Literal& lt);
+    std::string literal_stringify(const Literal& lt, bool lox);
 }
 
 class Token
@@ -32,7 +32,7 @@ public:
     type_str(type_string(t)),
     lexeme(lx),
     literal(lt),
-    literal_str(tk::literal_stringify(lt)),
+    literal_str(tk::literal_stringify(lt, false)),
     line(ln) {}
 
     std::string to_string() const;
