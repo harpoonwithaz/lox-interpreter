@@ -10,49 +10,68 @@ class Expr
 public:
     virtual ~Expr() = default; // child classes get their own destructor
     virtual std::string to_string() const = 0; // child classes get their own print methods
+
+    virtual tk::Literal evaluate() const = 0;
 };
 
-class Binary : public Expr
+class BinaryExpr : public Expr
 {
-public:
+private:
     std::unique_ptr<Expr> left;
     Token op;
     std::unique_ptr<Expr> right;
 
-    Binary(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right)
+public:
+    BinaryExpr(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right)
     : left(std::move(left)), op(op), right(std::move(right)) {}
 
     std::string to_string() const override;
+
+    tk::Literal evaluate() const override;
 };
 
-class Grouping : public Expr {
-public:
+class GroupingExpr : public Expr {
+private:
     std::unique_ptr<Expr> expression;
 
-    Grouping(std::unique_ptr<Expr> expression)
+public:
+    GroupingExpr(std::unique_ptr<Expr> expression)
         : expression(std::move(expression)) {}
 
     std::string to_string() const override;
+
+    tk::Literal evaluate() const override;
 };
 
-class Literal : public Expr {
-public:
-    std::any value;
+class LiteralExpr : public Expr {
+private:
+    tk::Literal value;
     std::string literal_str;
 
-    Literal(std::any v, std::string ls) 
+public:
+    LiteralExpr(tk::Literal v, std::string ls) 
     : value(v), literal_str(ls) {}
 
     std::string to_string() const override;
+    
+    tk::Literal evaluate() const override;
 };
 
-class Unary : public Expr {
-public:
+class UnaryExpr : public Expr {
+private:
     Token op;
     std::unique_ptr<Expr> right;
 
-    Unary(Token op, std::unique_ptr<Expr> right)
+public:
+    UnaryExpr(Token op, std::unique_ptr<Expr> right)
         : op(op), right(std::move(right)) {}
 
     std::string to_string() const override;
+
+    tk::Literal evaluate() const override;
 };
+
+bool is_truthy(const tk::Literal& lt);
+bool is_equal(const tk::Literal& a, const tk::Literal& b);
+void check_double_literals(const tk::Literal& a, const tk::Literal& b, const Token& op);
+void check_double_literal(const tk::Literal& a, const Token& op);

@@ -2,13 +2,14 @@
 #include "token.h"
 
 #include <string>
-#include <any>
+#include <variant>
 #include <iostream>
 #include <cstddef>
 #include <format>
 #include <cmath>
 
-std::string Token::type_string(TokenType t)
+// why doesn't c++ have a way to print the name of the enum :(
+std::string Token::type_string(TokenType t) const
 {
     switch (t)
     {
@@ -56,22 +57,24 @@ std::string Token::type_string(TokenType t)
     }
 }
 
-// std::any is black magic and i dont really care how it works, only that it does
-std::string Token::literal_string(const std::any& literal)
+// helper function that casts dynamic lox type to string representation and returns it
+std::string tk::literal_stringify(const Literal& lt)
 {
-    if (!literal.has_value()) return "null";
-
-    if (literal.type() == typeid(std::nullptr_t)) return "null";
-    if (literal.type() == typeid(std::string)) return std::any_cast<const std::string&>(literal);
-    if (literal.type() == typeid(double)) 
+    if (std::holds_alternative<std::monostate>(lt)) return "null";
+    if (std::holds_alternative<std::string>(lt)) return std::get<std::string>(lt);
+    if (std::holds_alternative<bool>(lt)) return (std::get<bool>(lt) ? "true" : "false"); 
+    if (std::holds_alternative<double>(lt))
     {
-        double value = std::any_cast<double>(literal);
+        double value = std::get<double>(lt);
 
         std::string formatted_val;
-        if (value == std::floor(value)) {
+        if (value == std::floor(value))
+        {
             // If it's a whole number, force exactly 1 decimal place (.0)
             formatted_val = std::format("{:.1f}", value);
-        } else {
+        }
+        else
+        {
             // Otherwise, let std::format dynamically print the exact precision without trailing zeros
             formatted_val = std::format("{}", value);
         }
@@ -89,7 +92,7 @@ std::string Token::to_string() const
 
 TokenType Token::get_type() const { return type; }
 
-std::any Token::get_literal() const { return literal; }
+tk::Literal Token::get_literal() const { return literal; }
 
 const std::string& Token::get_lexeme() const { return lexeme; }
 

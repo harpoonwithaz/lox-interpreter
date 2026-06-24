@@ -8,6 +8,7 @@
 #include "tokenization/scanner.h"
 #include "errors/error.h"
 #include "parsing/parser.h"
+#include "interpreting/interpreter.h"
 
 std::string read_file_contents(const std::string& filename);
 
@@ -52,16 +53,44 @@ int main(int argc, char *argv[]) {
             const std::vector<Token> tokens = scanner.get_tokens();
             Parser parser(tokens);
 
-            auto expr = parser.parse();
+            ExprNode root = parser.parse();
 
             if (EH::had_error) return 65;
 
-            parser.print_tree(std::move(expr));
+            parser.print_tree(std::move(root));
         }
         else
         {
             std::cout << "EOF  null" << std::endl;
         } 
+    }
+    else if (command == "evaluate")
+    {
+        std::string file_contents = read_file_contents(argv[2]);
+        
+        if (!file_contents.empty()) {
+            Scanner scanner(file_contents);
+            scanner.scan_tokens();
+
+            if (EH::had_error) return 65;
+
+            const std::vector<Token> tokens = scanner.get_tokens();
+            Parser parser(tokens);
+
+            ExprNode root = parser.parse();
+
+            if (EH::had_error) return 65;
+
+            Interpreter interpreter;
+            interpreter.interpret(root);
+
+            if (EH::had_error) return 65;
+            if (EH::had_runtime_error) return 70;
+        }
+        else
+        {
+            std::cout << "EOF  null" << std::endl;
+        }
     }
     else
     {

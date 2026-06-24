@@ -50,7 +50,7 @@ private:
     bool is_alpha_numeric(char c) const;
     bool is_digit(char c) const;
     void add_token(const TokenType& type);
-    void add_token(const TokenType& type, const std::any& literal);
+    void add_token(const TokenType& type, const tk::Literal& literal);
 public:
     inline Scanner(std::string source)
     : 

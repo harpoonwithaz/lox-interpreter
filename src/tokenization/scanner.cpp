@@ -177,9 +177,9 @@ bool Scanner::is_alpha_numeric(char c) const
 
 bool Scanner::is_digit(char c) const { return (c >= '0' && c <= '9'); }
 
-void Scanner::add_token(const TokenType& type) { add_token(type, nullptr); }
+void Scanner::add_token(const TokenType& type) { add_token(type, std::monostate{}); } // std::monostate{} represents nil/null type
 
-void Scanner::add_token(const TokenType& type, const std::any& literal)
+void Scanner::add_token(const TokenType& type, const tk::Literal& literal)
 {
     std::string text = source.substr(start, (current-start));
     tokens->push_back(Token(type, text, literal, line));
@@ -194,8 +194,7 @@ void Scanner::scan_tokens()
     }
 
     // add EOF token
-    tokens->push_back(Token(TokenType::EOFILE, "", nullptr, line));
-    // tokens.push_back(Token(TokenType::EOFILE, "", nullptr, line));
+    tokens->push_back(Token(TokenType::EOFILE, "", std::monostate{}, line));
 }
 
 void Scanner::print_tokens() const

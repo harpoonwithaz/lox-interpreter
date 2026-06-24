@@ -1,13 +1,13 @@
 #include <memory>
 #include <iostream>
 #include <stdexcept>
+#include <variant>
 
 #include "parser.h"
 #include "../tokenization/token-type.h"
 #include "../errors/error.h"
 
-using ExprNode = std::unique_ptr<Expr>;
-
+// Returns the root to the AST of parsed expressions
 ExprNode Parser::parse()
 {
     try
@@ -36,7 +36,7 @@ ExprNode Parser::equality()
     {
         Token op = previous(); // match consumed the token
         ExprNode right = comparison();
-        expr = std::make_unique<Binary>(std::move(expr), op, std::move(right));
+        expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
@@ -56,7 +56,7 @@ ExprNode Parser::comparison()
     {
         Token op = previous(); // match consumed the token
         ExprNode right = term();
-        expr = std::make_unique<Binary>(std::move(expr), op, std::move(right));
+        expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
@@ -70,7 +70,7 @@ ExprNode Parser::term()
     {
         Token op = previous();
         ExprNode right = factor();
-        expr = std::make_unique<Binary>(std::move(expr), op, std::move(right));
+        expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
@@ -84,7 +84,7 @@ ExprNode Parser::factor()
     {
         Token op = previous();
         ExprNode right = unary();
-        expr = std::make_unique<Binary>(std::move(expr), op, std::move(right));
+        expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
@@ -96,7 +96,7 @@ ExprNode Parser::unary()
     {
         Token op = previous();
         ExprNode right = unary();
-        return std::make_unique<Unary>(op, std::move(right));
+        return std::make_unique<UnaryExpr>(op, std::move(right));
     }
 
     return primary();
@@ -104,20 +104,20 @@ ExprNode Parser::unary()
 
 ExprNode Parser::primary()
 {
-    if (match({TokenType::FALSE})) return std::make_unique<Literal>(false, "false");
-    if (match({TokenType::TRUE})) return std::make_unique<Literal>(true, "true");
-    if (match({TokenType::NIL})) return std::make_unique<Literal>(nullptr, "nil");
+    if (match({TokenType::FALSE})) return std::make_unique<LiteralExpr>(false, "false");
+    if (match({TokenType::TRUE})) return std::make_unique<LiteralExpr>(true, "true");
+    if (match({TokenType::NIL})) return std::make_unique<LiteralExpr>(std::monostate{}, "nil");
 
     if (match({TokenType::NUMBER, TokenType::STRING})) 
     {
-        return std::make_unique<Literal>(previous().get_literal(), previous().get_literal_str());
+        return std::make_unique<LiteralExpr>(previous().get_literal(), previous().get_literal_str());
     }
 
     if (match({TokenType::LEFT_PAREN}))
     {
         ExprNode expr = expression();
         consume(TokenType::RIGHT_PAREN, "Expect ')' after expression.");
-        return std::make_unique<Grouping>(std::move(expr));
+        return std::make_unique<GroupingExpr>(std::move(expr));
     }
 
     EH::error(peek(), "Expect expression.");
