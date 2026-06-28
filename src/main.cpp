@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
             std::cout << "EOF  null" << std::endl;
         } 
     }
-    else if (command == "evaluate")
+    else if (command == "evaluate" || command == "run")
     {
         std::string file_contents = read_file_contents(argv[2]);
         
