@@ -139,7 +139,6 @@ ExprPtr Parser::primary()
     }
 
     EH::error(peek(), "Expect expression.");
-    throw std::exception(); // to be caught by the parser
 }
 
 // Statement operations
@@ -180,7 +179,6 @@ Token Parser::consume(TokenType type, const std::string& message)
     if (check(type)) return advance();
 
     EH::error(peek(), message);
-    throw std::exception(); // to be caught by the parser
 }
 
 // returns true if the current token is of the given type
