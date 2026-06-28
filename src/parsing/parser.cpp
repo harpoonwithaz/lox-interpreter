@@ -20,14 +20,21 @@ StmtList Parser::parse()
     //     return nullptr;
     // }
 
-    StmtList statements = std::make_unique<std::vector<StmtPtr>>();
-
-    while (!is_at_end())
+    try
     {
-        statements->push_back(parse_stmt());
-    }
+        StmtList statements = std::make_unique<std::vector<StmtPtr>>();
 
-    return statements;
+        while (!is_at_end())
+        {
+            statements->push_back(parse_stmt());
+        }
+
+        return statements;
+    }
+    catch(const std::exception& e)
+    {
+        return nullptr;
+    }
 }
 
 StmtPtr Parser::parse_stmt()
@@ -139,6 +146,7 @@ ExprPtr Parser::primary()
     }
 
     EH::error(peek(), "Expect expression.");
+    throw std::exception();
 }
 
 // Statement operations
@@ -179,6 +187,7 @@ Token Parser::consume(TokenType type, const std::string& message)
     if (check(type)) return advance();
 
     EH::error(peek(), message);
+    throw std::exception();
 }
 
 // returns true if the current token is of the given type
