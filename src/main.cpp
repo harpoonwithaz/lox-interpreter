@@ -52,12 +52,11 @@ int main(int argc, char *argv[]) {
 
             const std::vector<Token> tokens = scanner.get_tokens();
             Parser parser(tokens);
-
-            ExprNode root = parser.parse();
+            StmtList stmts = parser.parse();
 
             if (EH::had_error) return 65;
 
-            parser.print_tree(std::move(root));
+            parser.print_tree(std::move(stmts));
         }
         else
         {
@@ -77,12 +76,12 @@ int main(int argc, char *argv[]) {
             const std::vector<Token> tokens = scanner.get_tokens();
             Parser parser(tokens);
 
-            ExprNode root = parser.parse();
+            StmtList stmts = parser.parse();
 
             if (EH::had_error) return 65;
 
             Interpreter interpreter;
-            interpreter.interpret(root);
+            interpreter.interpret(stmts);
 
             if (EH::had_error) return 65;
             if (EH::had_runtime_error) return 70;

@@ -4,10 +4,14 @@
 #include <cstddef>
 #include <memory>
 
-#include "../tokenization/token.h"
 #include "expr.h"
+#include "stmt.h"
+#include "../tokenization/token.h"
 
-using ExprNode = std::unique_ptr<Expr>;
+using ExprPtr = std::unique_ptr<Expr>;
+using StmtPtr = std::unique_ptr<Stmt>;
+
+using StmtList = std::unique_ptr<std::vector<StmtPtr>>;
 
 class Parser
 {
@@ -15,15 +19,19 @@ private:
     const std::vector<Token> tokens;
     size_t current;
 
-    // Binary operations
-    ExprNode expression();
-    ExprNode equality();
-    ExprNode comparison();
-    ExprNode term();
-    ExprNode factor();
+    // Expression operations
+    ExprPtr expression();
+    ExprPtr equality();
+    ExprPtr comparison();
+    ExprPtr term();
+    ExprPtr factor();
 
-    ExprNode unary();
-    ExprNode primary();
+    ExprPtr unary();
+    ExprPtr primary();
+
+    // Statement operations
+    StmtPtr expression_stmt();
+    StmtPtr print_stmt();
 
     // Helper methods
     bool match(const std::vector<TokenType>& types);
@@ -37,6 +45,9 @@ private:
     void synchronize();
 public:
     Parser(const std::vector<Token>& t): tokens(t), current(0) {}
-    ExprNode parse();
-    void print_tree(ExprNode root);
+
+    StmtList parse();
+    StmtPtr parse_stmt();
+
+    void print_tree(StmtList stmts);
 };

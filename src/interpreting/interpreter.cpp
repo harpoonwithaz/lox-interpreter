@@ -6,13 +6,17 @@
 #include "interpreter.h"
 #include "../errors/error.h"
 
-void Interpreter::interpret(const ExprNode& tree) const
+void Interpreter::interpret(const StmtList& statements) const
 {
     try
     {
-        tk::Literal result = tree->evaluate();
+        // tk::Literal result = tree->evaluate();
 
-        std::cout << tk::literal_stringify(result, true) << std::endl;
+        // std::cout << tk::literal_stringify(result, true) << std::endl;
+        for (const StmtPtr& stmt : *statements)
+        {
+            stmt->execute();
+        }
     }
     catch(const EH::RuntimeError& err)
     {

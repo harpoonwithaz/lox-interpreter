@@ -8,34 +8,52 @@
 #include "../errors/error.h"
 
 // Returns the root to the AST of parsed expressions
-ExprNode Parser::parse()
+StmtList Parser::parse()
 {
-    try
+    // old
+    // try
+    // {
+    //     return expression();
+    // }
+    // catch(const std::exception& e)
+    // {
+    //     return nullptr;
+    // }
+
+    StmtList statements = std::make_unique<std::vector<StmtPtr>>();
+
+    while (!is_at_end())
     {
-        return expression();
+        statements->push_back(parse_stmt());
     }
-    catch(const std::exception& e)
-    {
-        return nullptr;
-    }
-    
+
+    return statements;
 }
 
-ExprNode Parser::expression()
+StmtPtr Parser::parse_stmt()
+{
+    if (match({TokenType::PRINT})) return print_stmt(); // print stmt
+
+    return expression_stmt();
+}
+
+
+
+ExprPtr Parser::expression()
 {
     return equality();
 }
 
 // prasing grammar equality rule:
 // equality      -> comparison ( ( "!=" | "==" ) comparison )* ;
-ExprNode Parser::equality()
+ExprPtr Parser::equality()
 {
-    ExprNode expr = comparison();
+    ExprPtr expr = comparison();
 
     while (match({TokenType::BANG_EQUAL, TokenType::EQUAL_EQUAL}))
     {
         Token op = previous(); // match consumed the token
-        ExprNode right = comparison();
+        ExprPtr right = comparison();
         expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
@@ -43,9 +61,9 @@ ExprNode Parser::equality()
 }
 
 // comparison     -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
-ExprNode Parser::comparison()
+ExprPtr Parser::comparison()
 {
-    ExprNode expr = term();
+    ExprPtr expr = term();
 
     while (match({
         TokenType::GREATER,
@@ -55,54 +73,54 @@ ExprNode Parser::comparison()
     }))
     {
         Token op = previous(); // match consumed the token
-        ExprNode right = term();
+        ExprPtr right = term();
         expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
 }
 
-ExprNode Parser::term()
+ExprPtr Parser::term()
 {
-    ExprNode expr = factor();
+    ExprPtr expr = factor();
 
     while (match({TokenType::MINUS, TokenType::PLUS}))
     {
         Token op = previous();
-        ExprNode right = factor();
+        ExprPtr right = factor();
         expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
 }
 
-ExprNode Parser::factor()
+ExprPtr Parser::factor()
 {
-    ExprNode expr = unary();
+    ExprPtr expr = unary();
 
     while (match({TokenType::SLASH, TokenType::STAR}))
     {
         Token op = previous();
-        ExprNode right = unary();
+        ExprPtr right = unary();
         expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
     }
 
     return expr;
 }
 
-ExprNode Parser::unary()
+ExprPtr Parser::unary()
 {
     if (match({TokenType::BANG, TokenType::MINUS}))
     {
         Token op = previous();
-        ExprNode right = unary();
+        ExprPtr right = unary();
         return std::make_unique<UnaryExpr>(op, std::move(right));
     }
 
     return primary();
 }
 
-ExprNode Parser::primary()
+ExprPtr Parser::primary()
 {
     if (match({TokenType::FALSE})) return std::make_unique<LiteralExpr>(false, "false");
     if (match({TokenType::TRUE})) return std::make_unique<LiteralExpr>(true, "true");
@@ -115,13 +133,28 @@ ExprNode Parser::primary()
 
     if (match({TokenType::LEFT_PAREN}))
     {
-        ExprNode expr = expression();
+        ExprPtr expr = expression();
         consume(TokenType::RIGHT_PAREN, "Expect ')' after expression.");
         return std::make_unique<GroupingExpr>(std::move(expr));
     }
 
     EH::error(peek(), "Expect expression.");
     throw std::exception(); // to be caught by the parser
+}
+
+// Statement operations
+StmtPtr Parser::expression_stmt()
+{
+    ExprPtr expr = expression();
+    consume(TokenType::SEMICOLON, "Expect ';' after expression.");
+    return std::make_unique<ExpressionStmt>(std::move(expr));
+}
+
+StmtPtr Parser::print_stmt()
+{
+    ExprPtr value = expression();
+    consume(TokenType::SEMICOLON, "Expect ';' after value.");
+    return std::make_unique<PrintStmt>(std::move(value));
 }
 
 // ------- Helper methods -------
@@ -141,6 +174,7 @@ bool Parser::match(const std::vector<TokenType>& types)
     return false;
 }
 
+// Advances untill it hits the particular token
 Token Parser::consume(TokenType type, const std::string& message)
 {
     if (check(type)) return advance();
@@ -206,13 +240,17 @@ void Parser::synchronize()
     }
 }
 
-void Parser::print_tree(ExprNode root)
+void Parser::print_tree(StmtList stmts)
 {
-    // ExprNode root = expression();
-    if (!root)
+    // ExprPtr root = expression();
+    if (stmts->empty())
     {
         std::cout << "null\n";
+        return;
     }
 
-    std::cout << root->to_string() << std::endl;
+    for (const StmtPtr& stmt : *stmts)
+    {
+        std::cout << stmt->to_string() << std::endl;
+    }
 }
