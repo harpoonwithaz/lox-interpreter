@@ -83,7 +83,6 @@ int main(int argc, char *argv[]) {
             Interpreter interpreter;
             interpreter.interpret(stmts);
 
-            if (EH::had_error) return 65;
             if (EH::had_runtime_error) return 70;
         }
         else
